@@ -21,5 +21,14 @@ export const useApi = () => {
   return {
     post: (endpoint, options) =>
       request(endpoint, { ...options, method: 'POST' }),
+
+    get: (endpoint, options) =>
+      request(endpoint, { ...options, method: 'GET' }),
+
+    put: (endpoint, options) =>
+      request(endpoint, { ...options, method: 'PUT' }),
+
+    delete: (endpoint, options) =>
+      request(endpoint, { ...options, method: 'DELETE' }),
   };
 };

@@ -22,7 +22,7 @@ export const parseErrors = (err) => {
   }
 
   return {
-    message: 'Oops an error occured :( Contact Support ',
+    message: 'Oops an error occured :(  ',
     details: [],
   };
 };

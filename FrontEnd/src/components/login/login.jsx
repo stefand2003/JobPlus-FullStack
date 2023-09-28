@@ -1,10 +1,9 @@
 import '../styles/form.scss';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { parseErrors } from '../../utils/parseErrors';
 import Alert from '../../alert/alert';
 import { useNavigate } from 'react-router-dom';
+import { useApi } from '../../hooks/useApi';
 
 export default function login() {
   const [identifier, setIdentifier] = useState('');
@@ -13,27 +12,22 @@ export default function login() {
   const [alert, setAlert] = useState({});
   const navigate = useNavigate();
 
+  const { post } = useApi();
+
+  const handleSuccess = () => {
+    setIdentifier('');
+    setPassword('');
+    navigate('/');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = {
-      identifier,
-      password,
-    };
-
-    try {
-      const res = await axios.post(
-        'http://localhost:1337/api/auth/local',
-        data
-      );
-
-      setIdentifier('');
-      setPassword('');
-
-      navigate('/');
-    } catch (err) {
-      setAlert(parseErrors(err));
-    }
+    const res = await post('auth/local', {
+      data: { identifier, password },
+      onSuccess: (res) => handleSuccess(),
+      onFailure: (err) => setAlert(err),
+    });
   };
 
   return (

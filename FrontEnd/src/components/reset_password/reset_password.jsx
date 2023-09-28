@@ -1,15 +1,16 @@
 import '../styles/form.scss';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { parseErrors } from '../../utils/parseErrors';
 import Alert from '../../alert/alert';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useApi } from '../../hooks/useApi';
 
 export default function reset_password() {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [alert, setAlert] = useState({});
+
+  const { post } = useApi();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,28 +18,22 @@ export default function reset_password() {
   const searchParams = new URLSearchParams(location.search);
   const code = searchParams.get('code');
 
+  const handleSuccess = () => {
+    setPasswordConfirmation('');
+    setPassword('');
+    navigate('/login');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = {
-      passwordConfirmation,
+    await post('auth/reset-password', {
+      data: code,
       password,
-      code,
-    };
-
-    try {
-      const res = await axios.post(
-        'http://localhost:1337/api/auth/reset-password',
-        data
-      );
-
-      setPasswordConfirmation('');
-      setPassword('');
-
-      navigate('/login');
-    } catch (err) {
-      setAlert(parseErrors(err));
-    }
+      passwordConfirmation,
+      onSuccess: (res) => handleSuccess(),
+      onFailure: (err) => setAlert(err),
+    });
   };
 
   return (

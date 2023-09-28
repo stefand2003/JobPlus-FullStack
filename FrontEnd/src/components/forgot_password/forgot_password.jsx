@@ -1,38 +1,31 @@
 import '../styles/form.scss';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { parseErrors } from '../../utils/parseErrors';
 import Alert from '../../alert/alert';
+import { useApi } from '../../hooks/useApi';
 
 export default function forgot_password() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   const [alert, setAlert] = useState({});
+  const { post } = useApi();
+
+  const handleSuccess = () => {
+    setEmail('');
+    setAlert({
+      type: 'success',
+      message: 'Please check your email for further instructions',
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = {
-      email,
-    };
-
-    try {
-      const res = await axios.post(
-        'http://localhost:1337/api/auth/forgot-password',
-        data
-      );
-
-      setEmail('');
-
-      setAlert({
-        type: 'success',
-        message: 'Please check your email for further instructions',
-      });
-    } catch (err) {
-      setAlert(parseErrors(err));
-    }
+    await post('auth/forgot-password', {
+      data: email,
+      onSuccess: () => handleSuccess(),
+      onFailure: (err) => setAlert(err),
+    });
   };
 
   return (

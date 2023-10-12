@@ -48,7 +48,7 @@ export default function register() {
 
     await post('auth/local/register', {
       data: data,
-      onSuccess: (res) => onSuccess(),
+      onSuccess: (res) => handleSuccess(res),
       onFailure: (err) => setAlert(err),
     });
   };

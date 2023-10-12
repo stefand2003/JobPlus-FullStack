@@ -31,7 +31,7 @@ export default function reset_password() {
       data: code,
       password,
       passwordConfirmation,
-      onSuccess: (res) => handleSuccess(),
+      onSuccess: (res) => handleSuccess(res),
       onFailure: (err) => setAlert(err),
     });
   };

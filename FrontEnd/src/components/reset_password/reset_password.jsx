@@ -67,7 +67,7 @@ export default function reset_password() {
         </div>
 
         <footer>
-          Remembered Password? <Link to='/login'>Login</Link>
+          RememberPassword? <Link to='/login'>Login</Link>
         </footer>
       </form>
     </>

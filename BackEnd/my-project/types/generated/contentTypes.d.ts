@@ -682,6 +682,7 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
     singularName: 'category';
     pluralName: 'categories';
     displayName: 'Category';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -692,6 +693,11 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       'api::category.category',
       'manyToOne',
       'api::sector.sector'
+    >;
+    jobs: Attribute.Relation<
+      'api::category.category',
+      'oneToMany',
+      'api::job.job'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -704,6 +710,44 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::category.category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiCompanyCompany extends Schema.CollectionType {
+  collectionName: 'companies';
+  info: {
+    singularName: 'company';
+    pluralName: 'companies';
+    displayName: 'Company';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    town: Attribute.String;
+    city: Attribute.String;
+    postcode: Attribute.String;
+    jobs: Attribute.Relation<
+      'api::company.company',
+      'oneToMany',
+      'api::job.job'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::company.company',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::company.company',
       'oneToOne',
       'admin::user'
     > &
@@ -740,6 +784,82 @@ export interface ApiHomeSectorHomeSector extends Schema.SingleType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::home-sector.home-sector',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiJobJob extends Schema.CollectionType {
+  collectionName: 'jobs';
+  info: {
+    singularName: 'job';
+    pluralName: 'jobs';
+    displayName: 'Job';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String;
+    salaryType: Attribute.Enumeration<['Negotiable', 'Fixed']>;
+    salary: Attribute.Decimal;
+    description: Attribute.RichText;
+    job_types: Attribute.Relation<
+      'api::job.job',
+      'manyToMany',
+      'api::job-type.job-type'
+    >;
+    company: Attribute.Relation<
+      'api::job.job',
+      'manyToOne',
+      'api::company.company'
+    >;
+    category: Attribute.Relation<
+      'api::job.job',
+      'manyToOne',
+      'api::category.category'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::job.job', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::job.job', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiJobTypeJobType extends Schema.CollectionType {
+  collectionName: 'job_types';
+  info: {
+    singularName: 'job-type';
+    pluralName: 'job-types';
+    displayName: 'JobType';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String;
+    jobs: Attribute.Relation<
+      'api::job-type.job-type',
+      'manyToMany',
+      'api::job.job'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::job-type.job-type',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::job-type.job-type',
       'oneToOne',
       'admin::user'
     > &
@@ -801,7 +921,10 @@ declare module '@strapi/strapi' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
       'api::category.category': ApiCategoryCategory;
+      'api::company.company': ApiCompanyCompany;
       'api::home-sector.home-sector': ApiHomeSectorHomeSector;
+      'api::job.job': ApiJobJob;
+      'api::job-type.job-type': ApiJobTypeJobType;
       'api::sector.sector': ApiSectorSector;
     }
   }
